@@ -34,6 +34,27 @@
  ******************************************************************************/
 
 /***************************************************************************//**
+ * Ring buffer used to send events to the frontend.
+ * @ingroup input_be
+ ******************************************************************************/
+class EventRingBuffer : public XenBackend::RingBufferOutBase<xenkbd_page,
+															 xenkbd_in_event>
+{
+public:
+	/**
+	 * @param domId     frontend domain id
+	 * @param port      event channel port number
+	 * @param ref       grant table reference
+	 * @param offset    start of the ring buffer inside the page
+	 * @param size      size of the ring buffer
+	 */
+	EventRingBuffer(int domId, int port, int ref, int offset, size_t size) :
+		RingBufferOutBase<xenkbd_page, xenkbd_in_event>(domId, port, ref,
+														offset, size)
+		{}
+};
+
+/***************************************************************************//**
  * Input frontend handler.
  * @ingroup input_be
  ******************************************************************************/

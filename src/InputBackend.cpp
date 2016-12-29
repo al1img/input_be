@@ -45,6 +45,7 @@ using std::unique_ptr;
 using XenBackend::BackendBase;
 using XenBackend::FrontendHandlerPtr;
 using XenBackend::Log;
+using XenBackend::RingBufferPtr;
 
 unique_ptr <InputBackend> gInputBackend;
 
@@ -56,6 +57,19 @@ void InputFrontendHandler::onBind()
 {
 	LOG(mLog, DEBUG) << "On frontend bind : " << getDomId();
 
+	if (getXenStore().readInt(getXsFrontendPath() + "/request-abs-pointer"))
+	{
+		LOG(mLog, INFO) << "Mouse supported";
+	}
+
+	auto port = getXenStore().readInt(getXsFrontendPath() + "/event-channel");
+	uint32_t ref = getXenStore().readInt(getXsFrontendPath() + "/page-gref");
+
+	RingBufferPtr eventRingBuffer(new EventRingBuffer(getDomId(), port, ref,
+													  XENKBD_IN_RING_OFFS,
+													  XENKBD_IN_RING_SIZE));
+
+	addRingBuffer(eventRingBuffer);
 }
 
 /*******************************************************************************
