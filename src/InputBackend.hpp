@@ -50,8 +50,7 @@ public:
 	 */
 	EventRingBuffer(int domId, int port, int ref, int offset, size_t size) :
 		RingBufferOutBase<xenkbd_page, xenkbd_in_event>(domId, port, ref,
-														offset, size)
-		{}
+														offset, size) {}
 };
 
 /***************************************************************************//**

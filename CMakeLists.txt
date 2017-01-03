@@ -4,11 +4,16 @@ set(PROJECT_NAME "input_be")
 
 project(${PROJECT_NAME})
 
-# set(INPUT_SOURCES
-# )
+set(INPUT_SOURCES
+	src/input/Device.cpp
+)
 
 set(BE_SOURCES
 	src/InputBackend.cpp
+)
+
+set(TEST_SOURCES
+	src/Test.cpp
 )
 
 include_directories(
@@ -22,12 +27,24 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -Wall")
 
 link_directories(${XEN_LIB_PATH} ${XENBE_LIB_PATH})
 
-# add_library(be_input STATIC ${INPUT_SOURCES})
+add_library(be_input STATIC ${INPUT_SOURCES})
 
 add_executable(${PROJECT_NAME} ${BE_SOURCES})
 
 target_link_libraries(${PROJECT_NAME}
-#	be_input
+	be_input
+	xenbe
+	xenctrl
+	xenstore
+	xenevtchn
+	xengnttab
+	pthread
+)
+
+add_executable(input_test ${TEST_SOURCES})
+
+target_link_libraries(input_test
+	be_input
 	xenbe
 	xenctrl
 	xenstore
